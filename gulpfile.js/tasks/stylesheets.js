@@ -6,9 +6,10 @@ var browserSync  = require('browser-sync')
 var sass         = require('gulp-sass')
 var sourcemaps   = require('gulp-sourcemaps')
 var handleErrors = require('../lib/handleErrors')
-var autoprefixer = require('gulp-autoprefixer')
+var autoprefixer = require('autoprefixer')
 var projectPath  = require('../lib/projectPath')
-var cssnano      = require('gulp-cssnano')
+var postcss      = require('gulp-postcss')
+var cssnano      = require('cssnano')
 
 var sassTask = function () {
 
@@ -23,15 +24,21 @@ var sassTask = function () {
     })
   }
 
-  var cssnanoConfig = TASK_CONFIG.stylesheets.cssnano || {}
-  cssnanoConfig.autoprefixer = false // this should always be false, since we're autoprefixing separately
+  var processors = [
+    autoprefixer(TASK_CONFIG.stylesheets.autoprefixer)
+  ];
+
+  if(global.production) {
+    var cssnanoConfig = TASK_CONFIG.stylesheets.cssnano || {}
+    cssnanoConfig.autoprefixer = false // this should always be false, since we're autoprefixing separately
+    processors.push(cssnano(cssnanoConfig))
+  }
 
   return gulp.src(paths.src)
     .pipe(gulpif(!global.production, sourcemaps.init()))
     .pipe(sass(TASK_CONFIG.stylesheets.sass))
     .on('error', handleErrors)
-    .pipe(autoprefixer(TASK_CONFIG.stylesheets.autoprefixer))
-    .pipe(gulpif(global.production, cssnano(cssnanoConfig)))
+    .pipe(postcss(processors))
     .pipe(gulpif(!global.production, sourcemaps.write()))
     .pipe(gulp.dest(paths.dest))
     .pipe(browserSync.stream())

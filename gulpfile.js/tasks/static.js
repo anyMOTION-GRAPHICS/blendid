@@ -7,7 +7,7 @@ const projectPath = require('../lib/projectPath')
 
 const staticTask = function() {
   const srcPath = projectPath(PATH_CONFIG.src, PATH_CONFIG.static.src)
-  const defaultSrcOptions = { dot: true }
+  const defaultSrcOptions = { dot: true, allowEmpty: true }
   const options = Object.assign(defaultSrcOptions, (TASK_CONFIG.static.srcOptions || {}))
 
   const paths = {

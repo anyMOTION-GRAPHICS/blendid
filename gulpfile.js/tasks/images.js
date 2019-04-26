@@ -12,7 +12,7 @@ var imagesTask = function() {
     dest: projectPath(PATH_CONFIG.dest, PATH_CONFIG.images.dest)
   }
 
-  return gulp.src([paths.src, , '*!README.md'])
+  return gulp.src([paths.src, '*!README.md'])
     .pipe(changed(paths.dest)) // Ignore unchanged files
     .pipe(gulp.dest(paths.dest))
     .pipe(browserSync.stream())

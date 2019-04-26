@@ -4,7 +4,7 @@ var revdel      = require('gulp-rev-delete-original')
 var projectPath = require('../../lib/projectPath')
 
 // 1) Add md5 hashes to assets referenced by CSS and JS files
-gulp.task('rev-assets', function() {
+var revAssetsTask = function(){
   // Ignore files that may reference assets. We'll rev them next.
   var ignoreThese = '!' + projectPath(PATH_CONFIG.dest,'**/*+(css|js|map|json|html)')
 
@@ -13,5 +13,8 @@ gulp.task('rev-assets', function() {
     .pipe(gulp.dest(PATH_CONFIG.dest))
     .pipe(revdel())
     .pipe(rev.manifest(projectPath(PATH_CONFIG.dest, 'rev-manifest.json'), {merge: true}))
-    .pipe(gulp.dest(''))
-})
+    .pipe(gulp.dest(PATH_CONFIG.dest))
+}
+
+gulp.task('rev-assets', revAssetsTask)
+module.exports = revAssetsTask

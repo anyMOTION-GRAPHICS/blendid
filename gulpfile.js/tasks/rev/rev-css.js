@@ -5,11 +5,14 @@ var projectPath = require('../../lib/projectPath')
 
 // 3) Rev and compress CSS and JS files (this is done after assets, so that if a
 //    referenced asset hash changes, the parent hash will change as well
-gulp.task('rev-css', function(){
+var revCssTask = function(){
   return gulp.src(projectPath(PATH_CONFIG.dest,'**/*.css'))
     .pipe(rev())
     .pipe(gulp.dest(PATH_CONFIG.dest))
     .pipe(revdel())
     .pipe(rev.manifest(projectPath(PATH_CONFIG.dest, 'rev-manifest.json'), {merge: true}))
-    .pipe(gulp.dest(''))
-})
+    .pipe(gulp.dest(PATH_CONFIG.dest))
+}
+
+gulp.task('rev-css', revCssTask)
+module.exports = revCssTask
